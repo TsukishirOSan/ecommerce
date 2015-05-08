@@ -1,0 +1,1 @@
+git+https://github.com/gtaylor/paypal-python.git@4908f83a247358b0f3dddb3b56dc91064014333c#egg=paypal==1.2.2
