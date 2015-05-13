@@ -12,9 +12,10 @@ from acceptance_tests.pages import LMSLoginPage
 
 log = logging.getLogger(__name__)
 
+
 # Used to login
 class LoginMixin(object):
-    
+
     # Instantiates the login
     def setUp(self):
         super(LoginMixin, self).setUp()
@@ -37,11 +38,12 @@ class LoginMixin(object):
 
 # Used to logout
 class LogoutMixin(object):
-    
+
     # Logs out
     def logout(self):
         url = '{}/accounts/logout/'.format(APP_SERVER_URL)
         self.browser.get(url)
+
 
 # Retrieves info about the user
 class LmsUserMixin(object):
@@ -49,7 +51,7 @@ class LmsUserMixin(object):
 
     # Gets the user credentials
     def get_lms_user(self):
-        
+
         # If using auto_auth, we create a new user
         if ENABLE_LMS_AUTO_AUTH:
             return self.create_lms_user()
@@ -74,6 +76,7 @@ class LmsUserMixin(object):
 
         return username, password, email
 
+
 # Assertments for the enrollment API
 class EnrollmentApiMixin(object):
     def setUp(self):
@@ -83,6 +86,7 @@ class EnrollmentApiMixin(object):
     def assert_user_enrolled(self, username, course_id, mode='honor'):
         status = self.enrollment_api_client.get_enrollment_status(username, course_id)
         self.assertDictContainsSubset({'is_active': True, 'mode': mode}, status)
+
 
 # Assertments for the ecommerce api
 class EcommerceApiMixin(object):

@@ -12,9 +12,10 @@ from acceptance_tests.config import VERIFIED_COURSE_ID, HTTPS_RECEIPT_PAGE, PAYP
 from acceptance_tests.mixins import LoginMixin, EnrollmentApiMixin, EcommerceApiMixin, LmsUserMixin
 from acceptance_tests.pages import LMSCourseModePage
 
+
 # Tests payment methods
 class VerifiedCertificatePaymentTests(EcommerceApiMixin, EnrollmentApiMixin, LmsUserMixin, LoginMixin, WebAppTest):
-    
+
     # Set up the tests
     def setUp(self):
         super(VerifiedCertificatePaymentTests, self).setUp()

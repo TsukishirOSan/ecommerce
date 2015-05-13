@@ -3,9 +3,10 @@ from bok_choy.web_app_test import WebAppTest
 from acceptance_tests.config import COURSE_ID
 from acceptance_tests.mixins import LoginMixin, EcommerceApiMixin, EnrollmentApiMixin, LmsUserMixin
 
+
 # Tests course enrollment
 class LoginEnrollmentTests(EcommerceApiMixin, EnrollmentApiMixin, LmsUserMixin, LoginMixin, WebAppTest):
-    
+
     # Set up the test
     def setUp(self):
         super(LoginEnrollmentTests, self).setUp()

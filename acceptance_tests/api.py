@@ -3,22 +3,23 @@ from requests.auth import AuthBase
 
 from acceptance_tests.config import ENROLLMENT_API_URL, ENROLLMENT_API_TOKEN
 
+
 # Attaches Bearer Authentication to the given Request object.
 class BearerAuth(AuthBase):
-    
+
     # Instantiates the auth class
     def __init__(self, token):
         self.token = token
 
-        
     # Update the request headers.
     def __call__(self, r):
         r.headers['Authorization'] = 'Bearer {}'.format(self.token)
         return r
 
+
 # The enrollment API client
 class EnrollmentApiClient(object):
-    
+
     # Instantiates the enrollment class
     def __init__(self, host=None, key=None):
         self.host = host or ENROLLMENT_API_URL

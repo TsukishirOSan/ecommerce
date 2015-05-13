@@ -6,10 +6,11 @@ from acceptance_tests.config import ENABLE_OAUTH_TESTS
 from acceptance_tests.mixins import LoginMixin
 from acceptance_tests.pages import DashboardHomePage
 
+
 # Tests OAuth2 logins
 @skipUnless(ENABLE_OAUTH_TESTS, 'OAuth tests are not enabled.')
 class OAuth2FlowTests(LoginMixin, WebAppTest):
-    
+
     # Set up the test
     def setUp(self):
         """
