@@ -33,15 +33,18 @@ LMS_EMAIL = os.environ.get('LMS_EMAIL')
 LMS_PASSWORD = os.environ.get('LMS_PASSWORD')
 HTTPS_RECEIPT_PAGE = str2bool(os.environ.get('HTTPS_RECEIPT_PAGE', True))
 
+# Throw an error if the LMS url, username, and password is not set and we need them
 if ENABLE_OAUTH_TESTS and not (LMS_URL and LMS_USERNAME and LMS_PASSWORD):
     raise Exception('LMS settings must be set in order to test OAuth.')
 
 # Enrollment API configuration
 ENROLLMENT_API_URL = os.environ.get('ENROLLMENT_API_URL')
+
 if not ENROLLMENT_API_URL:
     ENROLLMENT_API_URL = '{}/api/enrollment/v1'.format(LMS_URL)
 
 ENROLLMENT_API_TOKEN = os.environ.get('ENROLLMENT_API_TOKEN', ACCESS_TOKEN)
 
+# PayPal info
 PAYPAL_EMAIL = os.environ.get('PAYPAL_EMAIL', None)
 PAYPAL_PASSWORD = os.environ.get('PAYPAL_PASSWORD', None)

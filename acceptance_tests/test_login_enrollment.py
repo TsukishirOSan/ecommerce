@@ -3,13 +3,16 @@ from bok_choy.web_app_test import WebAppTest
 from acceptance_tests.config import COURSE_ID
 from acceptance_tests.mixins import LoginMixin, EcommerceApiMixin, EnrollmentApiMixin, LmsUserMixin
 
-
+# Tests course enrollment
 class LoginEnrollmentTests(EcommerceApiMixin, EnrollmentApiMixin, LmsUserMixin, LoginMixin, WebAppTest):
+    
+    # Set up the test
     def setUp(self):
         super(LoginEnrollmentTests, self).setUp()
         self.course_id = COURSE_ID
         self.username, self.password, self.email = self.get_lms_user()
 
+    # Run the tests
     def test_honor_enrollment_and_login(self):
         """ Verifies that a user can login and enroll in a course via the login page. """
 

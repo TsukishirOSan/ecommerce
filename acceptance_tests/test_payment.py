@@ -12,13 +12,16 @@ from acceptance_tests.config import VERIFIED_COURSE_ID, HTTPS_RECEIPT_PAGE, PAYP
 from acceptance_tests.mixins import LoginMixin, EnrollmentApiMixin, EcommerceApiMixin, LmsUserMixin
 from acceptance_tests.pages import LMSCourseModePage
 
-
+# Tests payment methods
 class VerifiedCertificatePaymentTests(EcommerceApiMixin, EnrollmentApiMixin, LmsUserMixin, LoginMixin, WebAppTest):
+    
+    # Set up the tests
     def setUp(self):
         super(VerifiedCertificatePaymentTests, self).setUp()
         self.course_id = VERIFIED_COURSE_ID
         self.username, self.password, self.email = self.get_lms_user()
 
+    # Checks out a product
     def _start_checkout(self):
         """ Begin the checkout process for a verified certificate. """
         self.login_with_lms(self.email, self.password)
@@ -29,6 +32,7 @@ class VerifiedCertificatePaymentTests(EcommerceApiMixin, EnrollmentApiMixin, Lms
         # the browser to the payment selection page.
         course_modes_page.q(css='input[name=verified_mode]').click()
 
+    # Ensures the receipt page is loaded
     def assert_receipt_page_loads(self):
         """ Verifies the receipt page loaded in the browser. """
 
@@ -52,6 +56,7 @@ class VerifiedCertificatePaymentTests(EcommerceApiMixin, EnrollmentApiMixin, Lms
         actual = [cell.text for cell in cells]
         self.assertListEqual(actual, expected)
 
+    # Dismisses any alerts that pops up
     def _dismiss_alert(self):
         """
         If we are testing locally with a non-HTTPS LMS instance, a security alert may appear when transitioning to
@@ -64,6 +69,7 @@ class VerifiedCertificatePaymentTests(EcommerceApiMixin, EnrollmentApiMixin, Lms
             except TimeoutException:
                 pass
 
+    # Runs checkout using the cybersource method
     def _checkout_with_cybersource(self):
         """ Completes the checkout process via CyberSource. """
 
@@ -109,6 +115,7 @@ class VerifiedCertificatePaymentTests(EcommerceApiMixin, EnrollmentApiMixin, Lms
 
         self._dismiss_alert()
 
+    # Tests cybersource checkout and payment
     def test_cybersource(self):
         """ Test checkout with CyberSource. """
         self._start_checkout()
@@ -118,6 +125,7 @@ class VerifiedCertificatePaymentTests(EcommerceApiMixin, EnrollmentApiMixin, Lms
         self.assert_order_created_and_completed()
         self.assert_user_enrolled(self.username, self.course_id, 'verified')
 
+    # Checks out using the paypal method
     def _checkout_with_paypal(self):
         """ Completes the checkout process via PayPal. """
 
@@ -143,6 +151,7 @@ class VerifiedCertificatePaymentTests(EcommerceApiMixin, EnrollmentApiMixin, Lms
         # Checkout
         self.browser.find_element_by_css_selector('input#continue').click()
 
+    # Tests paypal checkout and payment
     def test_paypal(self):
         """ Test checkout with PayPal. """
 

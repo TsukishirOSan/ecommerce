@@ -10,18 +10,21 @@ from acceptance_tests.config import (ENABLE_LMS_AUTO_AUTH, APP_SERVER_URL, LMS_P
                                      LMS_USERNAME, ECOMMERCE_API_TOKEN)
 from acceptance_tests.pages import LMSLoginPage
 
-
 log = logging.getLogger(__name__)
 
-
+# Used to login
 class LoginMixin(object):
+    
+    # Instantiates the login
     def setUp(self):
         super(LoginMixin, self).setUp()
         self.lms_login_page = LMSLoginPage(self.browser)
 
+    # Logs in with LMS
     def login(self):
         self.login_with_lms()
 
+    # Helper function for login()
     def login_with_lms(self, email=None, password=None, course_id=None):
         """ Visit LMS and login. """
         email = email or LMS_EMAIL
@@ -32,21 +35,29 @@ class LoginMixin(object):
         self.lms_login_page.login(email, password)
 
 
+# Used to logout
 class LogoutMixin(object):
+    
+    # Logs out
     def logout(self):
         url = '{}/accounts/logout/'.format(APP_SERVER_URL)
         self.browser.get(url)
 
-
+# Retrieves info about the user
 class LmsUserMixin(object):
     password = 'edx'
 
+    # Gets the user credentials
     def get_lms_user(self):
+        
+        # If using auto_auth, we create a new user
         if ENABLE_LMS_AUTO_AUTH:
             return self.create_lms_user()
 
+        # If not, return the user's current info
         return LMS_USERNAME, LMS_PASSWORD, LMS_EMAIL
 
+    # Creates new auto auth user
     def create_lms_user(self, username=None, password=None, email=None):
         username = username or ('auto_auth_' + uuid.uuid4().hex[0:20])
         password = password or 'edx'
@@ -63,7 +74,7 @@ class LmsUserMixin(object):
 
         return username, password, email
 
-
+# Assertments for the enrollment API
 class EnrollmentApiMixin(object):
     def setUp(self):
         super(EnrollmentApiMixin, self).setUp()
@@ -73,7 +84,7 @@ class EnrollmentApiMixin(object):
         status = self.enrollment_api_client.get_enrollment_status(username, course_id)
         self.assertDictContainsSubset({'is_active': True, 'mode': mode}, status)
 
-
+# Assertments for the ecommerce api
 class EcommerceApiMixin(object):
     @property
     def ecommerce_api_client(self):
