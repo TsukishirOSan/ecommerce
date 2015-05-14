@@ -58,20 +58,20 @@ master branch and are completely up-to-date:
 Testing Authentication and Enrollment
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
-To begin, boot up the `LMS VirtualBox
-Server <https://github.com/edx/configuration/wiki/edX-Developer-Stack#installing-the-edx-developer-stack>`__
-alongside the `eCommerce
-Server <https://github.com/edx/ecommerce#getting-started>`__. Once in
-the SSH session with the LMS machine, run the following two commands:
+Acceptance Testing
+~~~~~~~~~~~~~~~~~~
+
+Testing Authentication and Enrollment
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+To begin, ssh into the LMS machine. Once the session has started, use
+sudo to switch the superuser to edxapp:
 
 ::
 
     $ sudo su edxapp
-    $ sudo vi ../lms.env.json
 
-Vi is used as the text editor in this example, but any text editor will
-suffice. Once the JSON file is open, navigate to the 'OAuth' section and
-append the following information:
+Next, modify the settings of the LMS server to reflect these changes:
 
 ::
 
@@ -81,10 +81,9 @@ append the following information:
     OAUTH_OIDC_ISSUER: "http://127.0.0.1:8000/oauth2"
 
 If any of the above keys currently exist in the file, simply change
-their value. Restart the LMS server session to enforce these changes.
-Once the session has restarted, a Django superuser account must be
-created. This can be done by navigating to ``http://127.0.0.1:8000`` and
-signing up for a new edX account. Once this is completed, follow
+their value. Next, a Django superuser account must be created. This can
+be done by navigating to ``http://127.0.0.1:8000`` and signing up for a
+new edX account. Once this is completed, follow
 `these <https://gist.github.com/antoviaque/8423488>`__ instructions to
 grant the new account superuser privileges.
 
@@ -101,15 +100,15 @@ From here, add a new client with the following properties:
 
 Click *Save*. Next, add this client as a trusted client by clicking on
 the *Add* button next to "Trusted Clients". Lastly, add an access token
-for the new client bt clicking the *Add* button next to "Access Tokens".
+for the superuser bt clicking the *Add* button next to "Access Tokens".
 Set "Client" to the client just created, and make sure that the
 expiration date is sometime into the future. Once this step is
 completed, close out of the admin panel.
 
-Now, we must ensure that the eCommerce configuration files reflects
-these changes. In the eCommerce code repository, open the configuration
-file ``/acceptance_tests/config.py``. Ensure that ``ACCESS_TOKEN`` and
-``ECOMMERCE_API_SIGNING_KEY`` are both set to the access token we
+Now, we must ensure that the ecommerce configuration reflects these
+changes. In the ecommerce code repository, open the configuration file
+``/acceptance_tests/config.py``. Ensure that ``ACCESS_TOKEN`` and
+``ecommerce_API_SIGNING_KEY`` are both set to the access token we
 generated earlier.
 
 After these settings are confirmed, open
@@ -119,21 +118,21 @@ client and that ``SOCIAL_AUTH_EDX_OIDC_SECRET`` is set to the
 superuser's client secret (both of these values can be found in the LMS
 admin panel under "Clients"). ``JWT_AUTH['JWT_SECRET_KEY']`` should be
 set to the same access token used for ``ACCESS_TOKEN`` and
-``ECOMMERCE_API_SIGNING_KEY`` in ``config.py``. Restart the eCommerce
+``ecommerce_API_SIGNING_KEY`` in ``config.py``. Restart the ecommerce
 server for the changes to take effect.
 
 Now, in order to test user authentication, navigate to the root
-directory of the eCommerce repo and run\*:
+directory of the ecommerce repo and run:
 
 ::
 
-    APP_SERVER_URL="http://localhost:8002" LMS_URL="http://127.0.0.1:8000" LMS_USERNAME="<LMS-SU-USERNAME>" LMS_EMAIL="<LMS-SU-EMAIL>" LMS_PASSWORD="<LMS-SU-PASSWORD>" ACCESS_TOKEN="<ACCESS-TOKEN>" HTTPS_RECEIPT_PAGE="False" ENABLE_LMS_AUTO_AUTH=True nosetests acceptance_tests/test_auth.py
+    APP_SERVER_URL="http://localhost:8002" LMS_URL="http://127.0.0.1:8000" LMS_USERNAME="<LMS-SU-USERNAME>" LMS_EMAIL="<LMS-SU-EMAIL>" LMS_PASSWORD="<LMS-SU-PASSWORD>" ACCESS_TOKEN="<ACCESS-TOKEN>" HTTPS_RECEIPT_PAGE="False" ENABLE_LMS_AUTO_AUTH=True nosetests -v acceptance_tests/test_auth.py
 
-Likewise, to test course enrollment, run the following\*:
+Likewise, to test course enrollment, run the following:
 
 ::
 
-    APP_SERVER_URL="http://localhost:8002" LMS_URL="http://127.0.0.1:8000" LMS_USERNAME="<LMS-SU-USERNAME>" LMS_EMAIL="<LMS-SU-EMAIL>" LMS_PASSWORD="<LMS-SU-PASSWORD>" ACCESS_TOKEN="<ACCESS-TOKEN>" HTTPS_RECEIPT_PAGE="False" ENABLE_LMS_AUTO_AUTH=True nosetests acceptance_tests/test_login_enrollment.py
+    APP_SERVER_URL="http://localhost:8002" LMS_URL="http://127.0.0.1:8000" LMS_USERNAME="<LMS-SU-USERNAME>" LMS_EMAIL="<LMS-SU-EMAIL>" LMS_PASSWORD="<LMS-SU-PASSWORD>" ACCESS_TOKEN="<ACCESS-TOKEN>" HTTPS_RECEIPT_PAGE="False" ENABLE_LMS_AUTO_AUTH=True nosetests -v acceptance_tests/test_login_enrollment.py
 
 Testing Cybersource and PayPal Payments
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
@@ -145,7 +144,7 @@ To test Cybersource and PayPal payments, developer accounts on both
 sites are required. Once the accounts are established, place the account
 information (such as account ID and secret) in
 ``PAYMENT_PROCESSOR_CONFIG`` at the bottom of ``local.py``. Restart the
-eCommerce server for changes to take effect.
+ecommerce server for changes to take effect.
 
 Next, launch the edX Studio server (CMS). This can be done by following
 `these <https://github.com/edx/configuration/wiki/edX-Developer-Stack#studio-workflow>`__
@@ -193,24 +192,21 @@ currencies match as well (in the LMS admin panel, the currency must be
 lowercase).
 
 Now, in order to test payment, navigate to the root directory of the
-eCommerce repo and run\*:
+ecommerce repo and run:
 
 ::
 
-    APP_SERVER_URL="http://localhost:8002" LMS_URL="http://127.0.0.1:8000" LMS_USERNAME="<LMS-SU-USERNAME>" LMS_EMAIL="<LMS-SU-EMAIL>" LMS_PASSWORD="<LMS-SU-PASSWORD>" ACCESS_TOKEN="<ACCESS-TOKEN>" HTTPS_RECEIPT_PAGE="False" ENABLE_LMS_AUTO_AUTH=True PAYPAL_EMAIL="<PAYPAL-DEVELOPER-EMAIL>" PAYPAL_PASSWORD="<PAYPAL-DEVELOPER-PASSWORD>" VERIFIED_COURSE_ID="<VERIFIED-COURSE-KEY>" nosetests acceptance_tests/test_payment.py
+    APP_SERVER_URL="http://localhost:8002" LMS_URL="http://127.0.0.1:8000" LMS_USERNAME="<LMS-SU-USERNAME>" LMS_EMAIL="<LMS-SU-EMAIL>" LMS_PASSWORD="<LMS-SU-PASSWORD>" ACCESS_TOKEN="<ACCESS-TOKEN>" HTTPS_RECEIPT_PAGE="False" ENABLE_LMS_AUTO_AUTH=True PAYPAL_EMAIL="<PAYPAL-DEVELOPER-EMAIL>" PAYPAL_PASSWORD="<PAYPAL-DEVELOPER-PASSWORD>" VERIFIED_COURSE_ID="<VERIFIED-COURSE-KEY>" nosetests -v acceptance_tests/test_payment.py
 
 Running All Tests
 ^^^^^^^^^^^^^^^^^
 
 In order to run all tests, complete all of the steps above, then run the
-following command\*:
+following command:
 
 ::
 
     APP_SERVER_URL="http://localhost:8002" LMS_URL="http://127.0.0.1:8000" LMS_USERNAME="<LMS-SU-USERNAME>" LMS_EMAIL="<LMS-SU-EMAIL>" LMS_PASSWORD="<LMS-SU-PASSWORD>" ACCESS_TOKEN="<ACCESS-TOKEN>" HTTPS_RECEIPT_PAGE="False" ENABLE_LMS_AUTO_AUTH=True PAYPAL_EMAIL="<PAYPAL-DEVELOPER-EMAIL>" PAYPAL_PASSWORD="<PAYPAL-DEVELOPER-PASSWORD>" VERIFIED_COURSE_ID="<VERIFIED-COURSE-KEY>" make accept
-
-\*All strings in curly brackets must be replaced before running
-
 
 Documentation |ReadtheDocs|_ 
 ----------------------------
