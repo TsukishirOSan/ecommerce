@@ -92,12 +92,12 @@ OAUTH2_PROVIDER_URL = get_lms_url('/oauth2')
 
 # AUTHENTICATION
 # Set these to the correct values for your OAuth2/OpenID Connect provider (e.g., devstack)
-SOCIAL_AUTH_EDX_OIDC_KEY = 'replace-me'
-SOCIAL_AUTH_EDX_OIDC_SECRET = 'replace-me'
+SOCIAL_AUTH_EDX_OIDC_KEY = 'e6f4c222eac0fc4e5961'
+SOCIAL_AUTH_EDX_OIDC_SECRET = 'ec3bd033af59f9db7c0a544e8a357e29dc787c97'
 SOCIAL_AUTH_EDX_OIDC_URL_ROOT = OAUTH2_PROVIDER_URL
 SOCIAL_AUTH_EDX_OIDC_ID_TOKEN_DECRYPTION_KEY = SOCIAL_AUTH_EDX_OIDC_SECRET
 
-JWT_AUTH['JWT_SECRET_KEY'] = 'insecure-secret-key'
+JWT_AUTH['JWT_SECRET_KEY'] = 'edx'
 # END AUTHENTICATION
 
 
@@ -105,7 +105,7 @@ JWT_AUTH['JWT_SECRET_KEY'] = 'insecure-secret-key'
 ENROLLMENT_API_URL = get_lms_url('/api/enrollment/v1/enrollment')
 ENROLLMENT_FULFILLMENT_TIMEOUT = 15     # devstack is slow!
 
-EDX_API_KEY = 'replace-me'
+EDX_API_KEY = 'edx'
 # END ORDER PROCESSING
 
 

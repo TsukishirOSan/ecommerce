@@ -28,10 +28,13 @@ class UserMixin(object):
         return factories.UserFactory(password=self.password, **kwargs)
 
     def generate_jwt_token_header(self, user, secret=None):
+        import logging
+        logging.warning("called jwt")
         """Generate a valid JWT token header for authenticated requests."""
         secret = secret or getattr(settings, 'JWT_AUTH')['JWT_SECRET_KEY']
         payload = {
             'username': user.username,
+            'full_name': user.profile.name,
             'email': user.email,
         }
         return "JWT {token}".format(token=jwt.encode(payload, secret))
