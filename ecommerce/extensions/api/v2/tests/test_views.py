@@ -347,7 +347,7 @@ class OrderListViewTests(AccessTokenMixin, ThrottlingMixin, UserMixin, TestCase)
 class OrderFulfillViewTests(UserMixin, TestCase):
     def setUp(self):
         super(OrderFulfillViewTests, self).setUp()
-        ShippingEventType.objects.create(name=FulfillmentMixin.SHIPPING_EVENT_NAME)
+        ShippingEventType.objects.get_or_create(name=FulfillmentMixin.SHIPPING_EVENT_NAME)
 
         self.user = self.create_user(is_superuser=True)
         self.client.login(username=self.user.username, password=self.password)
@@ -462,3 +462,61 @@ class PaymentProcessorListViewTests(TestCase, UserMixin):
     def test_get_many(self):
         """Ensure multiple processors in settings are handled correctly."""
         self.assert_processor_list_matches([DummyProcessor.NAME, AnotherDummyProcessor.NAME])
+
+
+class RefundCreateViewTests(UserMixin, TestCase):
+    path = reverse('api:v2:refunds:create')
+
+    def setUp(self):
+        super(RefundCreateViewTests, self).setUp()
+        self.user = self.create_user()
+
+    def test_no_orders(self):
+        """ If the user has no orders, no refund IDs should be returned. HTTP status should be 200. """
+        self.assertFalse(self.user.orders.exists())
+        data = json.dumps({'username': self.user.username, 'course_id': 'edX/DemoX/Demo_Course'})
+        response = self.client.post(self.path, data, 'application/json')
+        self.assertEqual(response.status_code, status.HTTP_200_OK)
+        self.assertEqual(json.loads(response.content), [])
+
+    def test_missing_data(self):
+        """
+        If either username or course_id is missing from the POST body, return HTTP 406
+        """
+        self.fail()
+
+    def test_user_not_found(self):
+        """
+        If no user matching the username is found, return HTTP 406.
+        """
+        self.fail()
+
+    def test_course_not_found(self):
+        """
+        If no course matching the course_id is found, return HTTP 406.
+        """
+        self.fail()
+
+    def test_authentication(self):
+        """
+        Client must be authenticated via JWT, OAuth, or session.
+        """
+        self.fail()
+
+    def test_authorization(self):
+        """
+        Client must be authenticated as the user matching the username field or a superuser.
+        """
+        self.fail()
+
+    def test_valid_order(self):
+        """
+        View should create a refund if an order/line are found eligible for refund.
+        """
+        self.fail()
+
+    def test_invalid_line(self):
+        """
+        View should NOT create a refund if an order/line is found, but does no match the course ID.
+        """
+        self.fail()

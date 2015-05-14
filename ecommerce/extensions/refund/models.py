@@ -41,7 +41,7 @@ class StatusMixin(object):
 
 class Refund(StatusMixin, models.Model):
     """Main refund model, used to represent the state of a refund."""
-    order = models.ForeignKey('order.Order', related_name='refund', verbose_name=_('Order'))
+    order = models.ForeignKey('order.Order', related_name='refunds', verbose_name=_('Order'))
     user = models.ForeignKey('user.User', related_name='refunds', verbose_name=_('User'))
     total_credit_excl_tax = models.DecimalField(_('Total Credit (excl. tax)'), decimal_places=2, max_digits=12)
     status = models.CharField(_('Status'), max_length=255)
